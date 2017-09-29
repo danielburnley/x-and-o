@@ -30,12 +30,21 @@ class TestGrid:
     grid.set_cell("X", (0, 0))
 
     assert(grid.grid[0][0] == "X")
+    assert(grid.turns == 1)
 
   def test_setting_the_middle_square(self):
     grid = Grid()
     grid.set_cell("O", (1, 1))
 
     assert(grid.grid[1][1] == "O")
+    assert(grid.turns == 1)
+
+  def test_setting_multiple_cells(self):
+    grid = Grid()
+    grid.set_cell("X", (0, 0))
+    grid.set_cell("X", (0, 1))
+
+    assert(grid.turns == 2)
 
   def test_has_won_with_empty_grid(self):
     assert(not Grid().has_won())
@@ -82,3 +91,21 @@ class TestGrid:
     grid.set_cell('X', (0, 0))
     with pytest.raises(IllegalMoveError):
           grid.set_cell('X', (0, 0))
+
+  # All possible moves
+
+  def test_one_move_remaining(self):
+    grid = Grid()
+    grid.grid = [["X", "O", "X"], ["O", "X", "O"], ["O", "X", ""]]
+
+    possible_moves = grid.possible_moves()
+
+    assert(possible_moves == [(2,2)])
+
+  def test_multiple_moves_remaining(self):
+    grid = Grid()
+    grid.grid = [["", "O", "X"], ["O", "", "O"], ["O", "X", ""]]
+
+    possible_moves = grid.possible_moves()
+
+    assert(possible_moves == [(0,0),(1,1),(2,2)])

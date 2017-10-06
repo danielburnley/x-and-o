@@ -1,0 +1,2 @@
+class TestUI:
+  pass

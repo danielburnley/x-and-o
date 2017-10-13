@@ -80,3 +80,23 @@ class TestAI:
         game.player = "O"
         ai = AI(game=game, player="O")
         assert ai.get_next_move() == (2, 2)
+
+    def test_given_first_go_with_player_in_center(self):
+        game = Game(Grid())
+        game.grid.grid = [
+            [" "," "," "],
+            [" ","X"," "],
+            [" "," "," "]]
+        game.player = "O"
+        ai = AI(game=game, player="O")
+        assert ai.get_next_move() == (0, 0)
+
+    def test_given_first_go_with_player_not_in_center(self):
+        game = Game(Grid())
+        game.grid.grid = [
+            ["X"," "," "],
+            [" "," "," "],
+            [" "," "," "]]
+        game.player = "O"
+        ai = AI(game=game, player="O")
+        assert ai.get_next_move() == (1, 1)

@@ -43,6 +43,7 @@ class UI():
         for (r_index, row) in enumerate(self.game.grid.grid):
             for (c_index, col) in enumerate(row):
                 label = Label(self.main,
+                    relief="solid",
                     text=col,
                     font=('Courier', 200),
                     borderwidth=1,

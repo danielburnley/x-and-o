@@ -8,8 +8,20 @@ class AI():
         self.choice = None
 
     def get_next_move(self):
+        if self.is_first_move(self.game):
+            return self.first_move(self.game)
         self.minmax(self.game)
         return self.choice
+
+    def is_first_move(self, game):
+        flat_grid = [y for x in game.grid.grid for y in x]
+        return flat_grid.count("X") == 1 and flat_grid.count("O") == 0
+
+    def first_move(self, game):
+        if game.grid.grid[1][1] == "X":
+            return (0, 0)
+        else:
+            return (1, 1)
 
     def minmax(self, game):
         if game.finished():

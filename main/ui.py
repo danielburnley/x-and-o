@@ -3,7 +3,7 @@ from tkinter import *
 from grid import *
 from game import *
 
-class UI:
+class UI():
     def __init__(self):
         self.root = Tk()
         self.game = Game(Grid())

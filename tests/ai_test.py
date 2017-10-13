@@ -1,25 +1,82 @@
 from main.ai import AI
+from main.game import Game
 from main.grid import Grid
 
 class TestAI:
-  pass
-  # def test_only_one_move_possible(self):
-  #   grid = Grid()
-  #   ai = AI()
+    def test_score_when_AI_has_not_won(self):
+        game = Game(Grid())
+        game.grid.grid = [["O","O","O"],[" ", " ", " "],[" ", " ", " "]]
+        ai = AI(game=game, player="X")
+        assert ai.score(game) == -10
 
-  #   grid.grid = [["X", "O", "X"], ["O", "X", "O"], ["O", "X", ""]]
-  #   assert(ai.next_move(grid) == (2,2))
+    def test_score_when_AI_has_won(self):
+        game = Game(Grid())
+        game.grid.grid = [["O","O","O"],[" ", " ", " "],[" ", " ", " "]]
+        ai = AI(game=game, player="O")
+        assert ai.score(game) == 10
 
-  #   grid.grid = [["X", "", "X"], ["O", "X", "O"], ["O", "X", "O"]]
-  #   assert(ai.next_move(grid) == (0,1))
+    def test_score_when_everyone_lose(self):
+        game = Game(Grid())
+        game.grid.grid = [["O","X","O"],[" ", " ", " "],[" ", " ", " "]]
+        ai = AI(game=game, player="O")
+        assert ai.score(game) == 0
 
-  # def test_all_moves_possible(self):
-  #   assert(AI().next_move(Grid()) == (0,0))
+    def test_get_possible_moves_when_only_one_move(self):
+        game = Game(Grid())
+        game.grid.grid = [["O","X","O"],["X", " ", "X"],["X", "O", "X"]]
+        game.player = "O"
+        ai = AI(game=game, player="O")
+        assert len(ai.get_possible_moves(game)) == 1
+        assert ai.get_possible_moves(game)[0].grid.grid == [["O", "X", "O"], ["X", "O", "X"], ["X", "O", "X"]]
 
-  # def test_other_player_started_not_in_center(self):
-  #   grid = Grid()
-  #   ai = AI()
+    def test_get_possible_moves_when_only_one_move(self):
+        game = Game(Grid())
+        game.grid.grid = [["O"," ","O"],["X", " ", "X"],["X", " ", "X"]]
+        game.player = "O"
+        ai = AI(game=game, player="O")
+        assert len(ai.get_possible_moves(game)) == 3
 
-  #   grid.set_cell("X", (0, 0))
-  #   assert(ai.next_move(grid) == (1,1))
+    def test_get_possible_moves_when_only_one_move(self):
+        game = Game(Grid())
+        game.grid.grid = [["O","X","O"],["X", "O", "X"],["X", "O", "X"]]
+        game.player = "O"
+        ai = AI(game=game, player="O")
+        assert len(ai.get_possible_moves(game)) == 0
 
+    def test_returns_score_for_draw(self):
+        game = Game(Grid())
+        game.grid.grid = [["O","X","O"],["X", "O", "X"],["X", "O", "X"]]
+        game.player = "O"
+        ai = AI(game=game, player="O")
+        assert ai.minmax(game) == 0
+
+    def test_returns_score_for_AI_won(self):
+        game = Game(Grid())
+        game.grid.grid = [["O","O","O"],["X", "O", "X"],["X", "O", "X"]]
+        game.player = "X"
+        ai = AI(game=game, player="O")
+        assert ai.minmax(game) == 10
+
+    def test_returns_score_for_AI_lose(self):
+        game = Game(Grid())
+        game.grid.grid = [["O","X","O"],["X", "X", "X"],["X", "X", "X"]]
+        game.player = "O"
+        ai = AI(game=game, player="O")
+        assert ai.minmax(game) == -10
+
+    def test_next_move(self):
+        game = Game(Grid())
+        game.grid.grid = [["O","X","O"],["X", " ", "X"],["X", "O", "X"]]
+        game.player = "O"
+        ai = AI(game=game, player="O")
+        assert ai.get_next_move() == (1, 1)
+
+    def test_next_move_with_one_losing_move(self):
+        game = Game(Grid())
+        game.grid.grid = [
+            [" ","X","O"],
+            ["X","X","O"],
+            ["X","O"," "]]
+        game.player = "O"
+        ai = AI(game=game, player="O")
+        assert ai.get_next_move() == (2, 2)

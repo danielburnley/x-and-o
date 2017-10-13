@@ -3,6 +3,7 @@ from main.grid import IllegalMoveError
 
 class Game():
     def __init__(self, grid):
+        self.disable_ai = True
         self.grid = grid
         self.player = 'X'
 
@@ -30,7 +31,7 @@ class Game():
         self.grid.set_cell(self.player, pos)
         self.player = self.next_player()
 
-        if not self.finished():
+        if not self.disable_ai and not self.finished():
             ai = AI(self, self.player)
             ai_move = ai.get_next_move()
             self.grid.set_cell(self.player, ai_move)

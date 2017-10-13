@@ -7,6 +7,7 @@ class UI():
     def __init__(self):
         self.root = Tk()
         self.game = Game(Grid())
+        self.game.disable_ai = False
         self.main = Frame(self.root)
         self.bar = Frame(self.root)
 

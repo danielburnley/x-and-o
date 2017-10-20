@@ -8,6 +8,7 @@
         font-family: monospace;
         font-size: 80px;
         text-align: center;
+        font-size: 70px;
       }
 
       td a {
@@ -29,11 +30,18 @@
         {% set col_index = loop.index0|string %}
         {% set url = "/game/"+id+"/move/"+row_index+"/"+col_index %}
           <td>
-            <a href={{url}}>{{ col }}</a>
+            {% if col == " " %}
+              <a href={{url}}>{{ col }}</a>
+            {% else %}
+              {{ col }}
+            {% endif %}
           </td>
         {% endfor %}
       </tr>
       {% endfor %}
     </table>
+    <a href='/'>Home</a><br />
+    <a href='/game/new'>New game</a><br />
+    <a href='/game/new/twoplayer'>New game against IRL friend</a>
   </body>
 </html>

@@ -35,6 +35,7 @@ def move(id, row, col):
     game_data = db.get(doc_id=int(id))
     game = Game(Grid())
     game.restore(game_data)
-    game.move((int(row),int(col)))
-    db.update(game.to_dict(), doc_ids=[int(id)])
+    if not game.winner():
+        game.move((int(row),int(col)))
+        db.update(game.to_dict(), doc_ids=[int(id)])
     return redirect("/game/" + str(id))

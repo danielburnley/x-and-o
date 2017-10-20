@@ -39,3 +39,11 @@ class Game():
 
     def next_player(self):
         return 'O' if self.player == 'X' else 'X'
+
+    def restore(self, game_data):
+        self.grid.grid = game_data['grid']
+        self.player = game_data['player']
+        self.disable_ai = game_data['disable_ai']
+
+    def to_dict(self):
+        return {'grid': self.grid.grid, 'player': self.player, 'disable_ai': self.disable_ai}

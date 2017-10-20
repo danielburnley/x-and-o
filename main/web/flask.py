@@ -1,9 +1,7 @@
 from main.game import Game
 from main.grid import Grid
-from main.game_state import GameState
 from flask import Flask, render_template, redirect, url_for
 from tinydb import TinyDB, Query
-DISABLE_AI = False
 
 app = Flask(__name__)
 db = TinyDB('/tmp/tictactoe.json')
@@ -15,32 +13,28 @@ def index():
 @app.route("/game/new")
 def new():
     game = Game(Grid())
-    id = db.insert({'grid': game.grid.grid, 'player': game.player, 'disable_ai': DISABLE_AI})
+    game.disable_ai = False
+    id = db.insert(game.to_dict())
     return redirect("/game/" + str(id))
 
 @app.route("/game/new/twoplayer")
 def new_two_player():
     game = Game(Grid())
-    id = db.insert({'grid': game.grid.grid, 'player': game.player, 'disable_ai': True})
+    id = db.insert(game.to_dict())
     return redirect("/game/" + str(id))
 
 @app.route("/game/<id>")
 def game(id):
     game_data = db.get(doc_id=int(id))
     game = Game(Grid())
-    game.grid.grid = game_data['grid']
-    game.player = game_data['player']
-    game.disable_ai = game_data['disable_ai']
+    game.restore(game_data)
     return render_template('game.html', game = game, id=id)
 
 @app.route("/game/<id>/move/<row>/<col>")
 def move(id, row, col):
-    query = Query()
     game_data = db.get(doc_id=int(id))
     game = Game(Grid())
-    game.grid.grid = game_data['grid']
-    game.player = game_data['player']
-    game.disable_ai = game_data['disable_ai']
+    game.restore(game_data)
     game.move((int(row),int(col)))
-    db.update({'grid': game.grid.grid, 'player': game.player, 'disable_ai': game.disable_ai}, doc_ids=[int(id)])
+    db.update(game.to_dict(), doc_ids=[int(id)])
     return redirect("/game/" + str(id))

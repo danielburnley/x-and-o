@@ -7,6 +7,7 @@ class GridSpy:
         self.player = None
         self.won = False
         self.draw = False
+        self.grid = [["F"],["O"],["O"]]
 
     def set_cell(self, value, pos):
         self.set_cell_called = True
@@ -81,3 +82,8 @@ class TestGame:
         grid.draw = True
         game = Game(grid)
         assert game.status() == "       Draw       "
+
+    def test_to_dict(self):
+        game = Game(GridSpy())
+        game_data = game.to_dict()
+        assert game_data == {'disable_ai': True, 'grid': [['F'], ['O'], ['O']], 'player': 'X'}

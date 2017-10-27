@@ -111,3 +111,24 @@ class TestGrid:
         self.set_grid([[" ", "O", "X"], ["O", " ", "O"], ["O", "X", " "]])
 
         self.assert_possible_moves([(0,0),(1,1),(2,2)])
+
+# Variable Grid sizes
+
+    WINNING_SIZE_FOUR_GRIDS = [
+        [["X","X","X","X"],[" "," "," "," "],[" "," "," "," "],[" "," "," "," "]],
+        [[" "," "," "," "],[" "," "," "," "],[" "," "," "," "],["X","X","X","X"]],
+        [["X"," "," "," "],["X"," "," "," "],["X"," "," "," "],["X"," "," "," "]],
+        [[" "," "," ","X"],[" "," "," ","X"],[" "," "," ","X"],[" "," "," ","X"]],
+        [["X"," "," "," "],[" ","X"," "," "],[" "," ","X"," "],[" "," "," ","X"]],
+        [[" "," "," ","X"],[" "," ","X"," "],[" ","X"," "," "],["X"," "," "," "]]
+    ]
+
+    def test_given_grid_of_size_four_creates_correct_starting_grid(self):
+        self.grid = Grid(size=4)
+        assert self.grid.grid == [[" "," "," "," "],[" "," "," "," "],[" "," "," "," "],[" "," "," "," "]]
+
+    def test_given_winning_grids_with_size_four_correctly_returns_winner(self):
+        self.grid = Grid(size=4)
+        for tested_grid in self.WINNING_SIZE_FOUR_GRIDS:
+            self.grid.grid = tested_grid
+            assert self.grid.has_won()

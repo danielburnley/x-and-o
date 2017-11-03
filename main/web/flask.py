@@ -17,6 +17,13 @@ def new():
     id = db.insert(game.to_dict())
     return redirect("/game/" + str(id))
 
+@app.route("/game/new/<size>")
+def new_with_size(size):
+    game = Game(Grid(size=int(size)))
+    game.disable_ai = True
+    id = db.insert(game.to_dict())
+    return redirect("/game/" + str(id))
+
 @app.route("/game/new/twoplayer")
 def new_two_player():
     game = Game(Grid())

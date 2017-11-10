@@ -1,11 +1,13 @@
 from main.ai import AI
 from main.grid import IllegalMoveError
+from main.player import Player
 
 class Game():
-    def __init__(self, grid):
+    def __init__(self, grid, players):
         self.disable_ai = True
         self.grid = grid
-        self.player = 'X'
+        self.players = players
+        self.player = self.players[0]
 
     def winner(self):
         if self.grid.has_won():
@@ -20,30 +22,40 @@ class Game():
 
     def status(self):
         if self.winner():
-            return '  Player ' + self.winner() + ' won!  '
+            return '  Player ' + str(self.winner()) + ' won!  '
 
         if self.draw():
             return '       Draw       '
 
-        return 'Move of player ' + self.player
+        return 'Move of player ' + str(self.player)
 
     def move(self, pos):
-        self.grid.set_cell(self.player, pos)
+        self.grid.set_cell(self.player.symbols[0], pos)
         self.player = self.next_player()
 
         if not self.disable_ai and not self.finished():
             ai = AI(self, self.player)
             ai_move = ai.get_next_move()
-            self.grid.set_cell(self.player, ai_move)
+            self.grid.set_cell(self.player.symbols[0], ai_move)
             self.player = self.next_player()
 
     def next_player(self):
-        return 'O' if self.player == 'X' else 'X'
+        return self.players[1] if self.player == self.players[0] else self.players[0]
 
     def restore(self, game_data):
         self.grid.grid = game_data['grid']
         self.player = game_data['player']
         self.disable_ai = game_data['disable_ai']
+        self.players = [Player(player['name'], player['symbols']) for player in game_data['players']]
+        self.player = Player(game_data['player']['name'], game_data['player']['symbols'])
 
     def to_dict(self):
-        return {'grid': self.grid.grid, 'player': self.player, 'disable_ai': self.disable_ai}
+        return {
+            'grid': self.grid.grid,
+            'players': self.build_player_dict(),
+            'player': self.player.to_dict(),
+            'disable_ai': self.disable_ai
+        }
+
+    def build_player_dict(self):
+        return [player.to_dict() for player in self.players]

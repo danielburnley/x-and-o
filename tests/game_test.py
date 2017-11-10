@@ -1,4 +1,5 @@
 from main.game import Game
+from main.player import Player
 
 class GridSpy:
     def __init__(self):
@@ -22,7 +23,8 @@ class GridSpy:
 
 class TestGame:
     def setup_method(self, method):
-        self.game = Game(GridSpy())
+        self.players = [Player('One', ['X']), Player('Two', ['O'])]
+        self.game = Game(GridSpy(), self.players)
 
     def play_move(self, move):
         self.game.move(move)
@@ -40,20 +42,20 @@ class TestGame:
         assert self.game.winner() == expected_winner
 
     def test_starts_with_player_X(self):
-        self.assert_current_player('X')
+        self.assert_current_player(self.players[0])
 
     def test_player_changed_after_making_a_move(self):
         self.play_move((1, 1))
-        self.assert_current_player('O')
+        self.assert_current_player(self.players[1])
 
     def test_alternating_between_players(self):
         self.play_move((1, 1))
         self.play_move((1, 2))
-        self.assert_current_player('X')
+        self.assert_current_player(self.players[0])
 
     def test_given_move_game_calls_set_cell(self):
         self.play_move((1, 1))
-        assert self.game.grid.last_value_placed == 'X'
+        assert self.game.grid.last_value_placed == self.players[0].symbols[0]
         assert self.game.grid.set_cell_called
 
     def test_make_a_move_at_pos(self):
@@ -65,23 +67,23 @@ class TestGame:
 
     def test_winner_returns_next_player_when_won(self):
         self.set_game_won(True)
-        self.assert_winner('O')
+        self.assert_winner(self.players[1])
 
     def test_status_when_player_is_x(self):
-        self.assert_status("Move of player X")
+        self.assert_status("Move of player One")
 
     def test_status_when_player_is_o(self):
         self.play_move((1,1))
-        self.assert_status("Move of player O")
+        self.assert_status("Move of player Two")
 
     def test_status_when_player_x_won(self):
         self.set_game_won(True)
         self.play_move((1,1))
-        self.assert_status("  Player X won!  ")
+        self.assert_status("  Player One won!  ")
 
     def test_status_when_player_o_won(self):
         self.set_game_won(True)
-        self.assert_status("  Player O won!  ")
+        self.assert_status("  Player Two won!  ")
 
     def test_status_when_player_draw(self):
         self.game.grid.draw = True
@@ -89,4 +91,29 @@ class TestGame:
 
     def test_to_dict(self):
         game_data = self.game.to_dict()
-        assert game_data == {'disable_ai': True, 'grid': [['F'], ['O'], ['O']], 'player': 'X'}
+        assert game_data == {
+            'disable_ai': True,
+            'grid': [['F'], ['O'], ['O']],
+            'players': [
+                {'name': 'One', 'symbols': ['X']},
+                {'name': 'Two', 'symbols': ['O']}
+            ],
+            'player': {'name': 'One', 'symbols': ['X']}
+        }
+
+    def test_restore(self):
+        players = [Player('One', ['D']), Player('Two', ['F'])]
+        game_data = {
+            'disable_ai': True,
+            'grid': [['F'], ['D'], ['D']],
+            'players': [
+                {'name': 'One', 'symbols': ['D']},
+                {'name': 'Two', 'symbols': ['F']}
+            ],
+            'player': {'name': 'Two', 'symbols': ['F']}
+        }
+        self.game.restore(game_data)
+        assert self.game.disable_ai == game_data['disable_ai']
+        assert self.game.grid.grid == game_data['grid']
+        assert self.game.players == players
+        assert self.game.player == players[1]

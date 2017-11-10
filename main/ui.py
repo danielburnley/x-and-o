@@ -2,11 +2,13 @@ import functools
 from tkinter import *
 from grid import *
 from game import *
+from player import *
 
 class UI():
     def __init__(self):
         self.root = Tk()
-        self.game = Game(Grid())
+        self.players = [Player('One', ['X']), Player('Two', ['O'])]
+        self.game = Game(Grid(), self.players)
         self.game.disable_ai = False
         self.main = Frame(self.root)
         self.bar = Frame(self.root)

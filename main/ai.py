@@ -31,7 +31,7 @@ class AI():
 
         for move in game.grid.possible_moves():
             possible_game = copy.deepcopy(game)
-            possible_game.move(move)
+            possible_game.move(move, possible_game.player.symbols[0])
             scores.append(self.minmax(possible_game))
             moves.append(move)
 

@@ -27,7 +27,7 @@ class TestGame:
         self.game = Game(GridSpy(), self.players)
 
     def play_move(self, move):
-        self.game.move(move)
+        self.game.move(move, self.game.player.symbols[0])
 
     def set_game_won(self, has_won):
         self.game.grid.won = has_won

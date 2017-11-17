@@ -29,8 +29,11 @@ class Game():
 
         return 'Move of player ' + str(self.player)
 
-    def move(self, pos):
-        self.grid.set_cell(self.player.symbols[0], pos)
+    def move(self, pos, symbol=None):
+        if not symbol:
+            symbol = self.player.symbols[0]
+
+        self.grid.set_cell(symbol, pos)
         self.player = self.next_player()
 
         if not self.disable_ai and not self.finished():

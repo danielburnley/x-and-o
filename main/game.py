@@ -1,24 +1,32 @@
 from main.ai import AI
 from main.grid import IllegalMoveError
 from main.player import Player
+from main.rules.x_and_o_rules import XAndORules
 
 class Game():
-    def __init__(self, grid, players):
+    def __init__(self, grid, players, rules=XAndORules()):
         self.disable_ai = True
         self.grid = grid
         self.players = players
         self.player = self.players[0]
+        self.rules = rules
+
+    def has_won(self):
+        return self.rules.has_won(self.grid)
+
+    def has_draw(self):
+        return self.rules.has_draw(self.grid)
 
     def winner(self):
-        if self.grid.has_won():
+        if self.has_won():
             return self.next_player()
         return None
 
     def draw(self):
-        return self.grid.has_draw()
+        return self.has_draw()
 
     def finished(self):
-        return self.grid.has_won() or self.grid.has_draw()
+        return self.has_won() or self.has_draw()
 
     def status(self):
         if self.winner():

@@ -7,7 +7,6 @@ class TestAI:
     def setup_method(self, method):
         self.players = [Player('One', ['X']), Player('Two', ['O'])]
 
-
     def get_new_game(self, grid, player=0):
         game = Game(Grid(), self.players)
         game.grid.grid = grid

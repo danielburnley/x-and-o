@@ -6,8 +6,6 @@ class GridSpy:
         self.set_cell_called = False
         self.last_position_placed = None
         self.last_value_placed = None
-        self.won = False
-        self.draw = False
         self.grid = [["F"],["O"],["O"]]
 
     def set_cell(self, value, pos):
@@ -15,22 +13,27 @@ class GridSpy:
         self.last_position_placed = pos
         self.last_value_placed = value
 
-    def has_won(self):
+class RulesFake:
+    def __init__(self):
+        self.won = False
+        self.draw = False
+
+    def has_won(self, grid):
         return self.won
 
-    def has_draw(self):
+    def has_draw(self, grid):
         return self.draw
 
 class TestGame:
     def setup_method(self, method):
         self.players = [Player('One', ['X']), Player('Two', ['O'])]
-        self.game = Game(GridSpy(), self.players)
+        self.game = Game(GridSpy(), self.players, RulesFake())
 
     def play_move(self, move):
         self.game.move(move, self.game.player.symbols[0])
 
     def set_game_won(self, has_won):
-        self.game.grid.won = has_won
+        self.game.rules.won = True
 
     def assert_current_player(self, expected_player):
         assert self.game.player == expected_player
@@ -86,7 +89,7 @@ class TestGame:
         self.assert_status("  Player Two won!  ")
 
     def test_status_when_player_draw(self):
-        self.game.grid.draw = True
+        self.game.rules.draw = True
         self.assert_status("       Draw       ")
 
     def test_to_dict(self):
@@ -117,3 +120,11 @@ class TestGame:
         assert self.game.grid.grid == game_data['grid']
         assert self.game.players == players
         assert self.game.player == players[1]
+
+    def test_assert_gets_won_from_rules(self):
+        self.set_game_won(True)
+        assert self.game.has_won()
+
+    def test_assert_gets_won_from_rules(self):
+        self.game.rules.draw = True
+        assert self.game.has_draw()

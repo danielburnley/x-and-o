@@ -54,9 +54,7 @@ class AI():
         return games
 
     def score(self, game):
-        grid = game.grid
-
-        if(grid.has_won()):
+        if(game.has_won()):
             return 10 if game.winner() == self.player else -10
         else:
             return 0

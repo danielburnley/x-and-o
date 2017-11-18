@@ -3,25 +3,6 @@ import pytest
 from main.grid import Grid, IllegalMoveError
 
 class TestGrid:
-    WINNING_TEST_CASES = [
-        [["X", "X", "X"], [" ", " ", " "], [" ", " ", " "]],
-        [[" ", " ", " "], ["X", "X", "X"], [" ", " ", " "]],
-        [[" ", " ", " "], [" ", " ", " "], ["X", "X", "X"]],
-        [["X", " ", " "], ["X", " ", " "], ["X", " ", " "]],
-        [[" ", "X", " "], [" ", "X", " "], [" ", "X", " "]],
-        [[" ", " ", "X"], [" ", " ", "X"], [" ", " ", "X"]],
-        [["X", " ", " "], [" ", "X", " "], [" ", " ", "X"]],
-        [[" ", " ", "X"], [" ", "X", " "], ["X", " ", " "]],
-        [["O", "O", "O"], [" ", " ", " "], [" ", " ", " "]],
-        [[" ", " ", " "], ["O", "O", "O"], [" ", " ", " "]],
-        [[" ", " ", " "], [" ", " ", " "], ["O", "O", "O"]],
-        [["O", " ", " "], ["O", " ", " "], ["O", " ", " "]],
-        [[" ", "O", " "], [" ", "O", " "], [" ", "O", " "]],
-        [[" ", " ", "O"], [" ", " ", "O"], [" ", " ", "O"]],
-        [["O", " ", " "], [" ", "O", " "], [" ", " ", "O"]],
-        [[" ", " ", "O"], [" ", "O", " "], ["O", " ", " "]],
-    ]
-
     def setup_method(self, method):
         self.grid = Grid()
 
@@ -61,40 +42,6 @@ class TestGrid:
 
         self.assert_turns_passed(2)
 
-    def test_has_won_with_empty_grid(self):
-        assert not self.grid.has_won()
-
-    def test_has_won_with_top_row_mix_of_X_and_O(self):
-        self.set_cell("X", (0, 0))
-        self.set_cell("O", (0, 1))
-        self.set_cell("X", (0, 2))
-
-        assert not self.grid.has_won()
-
-    def test_has_won_with_left_row_mix_of_X_and_O(self):
-        self.set_cell("X", (0, 0))
-        self.set_cell("O", (1, 0))
-        self.set_cell("X", (2, 0))
-
-        assert not self.grid.has_won()
-
-    def test_win_conditions(self):
-        for tested_grid in self.WINNING_TEST_CASES:
-            self.grid.grid = tested_grid
-            assert self.grid.has_won()
-
-    def test_has_draw_with_empty_grid(self):
-        assert not self.grid.has_draw()
-
-    def test_has_draw_with_empty_grid(self):
-        self.set_grid([["X", "O", "X"], ["O", "X", "O"], ["O", "X", "O"]])
-        assert self.grid.has_draw()
-
-    def test_has_draw_with_winning_row(self):
-        self.set_grid([["X", "X", "O"], ["X", "O", "O"], ["X", "O", "X"]])
-
-        assert not self.grid.has_draw()
-
     def test_raises_exception_for_overriding_moves(self):
         self.set_cell('X', (0, 0))
         with pytest.raises(IllegalMoveError):
@@ -112,23 +59,6 @@ class TestGrid:
 
         self.assert_possible_moves([(0,0),(1,1),(2,2)])
 
-# Variable Grid sizes
-
-    WINNING_SIZE_FOUR_GRIDS = [
-        [["X","X","X","X"],[" "," "," "," "],[" "," "," "," "],[" "," "," "," "]],
-        [[" "," "," "," "],[" "," "," "," "],[" "," "," "," "],["X","X","X","X"]],
-        [["X"," "," "," "],["X"," "," "," "],["X"," "," "," "],["X"," "," "," "]],
-        [[" "," "," ","X"],[" "," "," ","X"],[" "," "," ","X"],[" "," "," ","X"]],
-        [["X"," "," "," "],[" ","X"," "," "],[" "," ","X"," "],[" "," "," ","X"]],
-        [[" "," "," ","X"],[" "," ","X"," "],[" ","X"," "," "],["X"," "," "," "]]
-    ]
-
     def test_given_grid_of_size_four_creates_correct_starting_grid(self):
         self.grid = Grid(size=4)
         assert self.grid.grid == [[" "," "," "," "],[" "," "," "," "],[" "," "," "," "],[" "," "," "," "]]
-
-    def test_given_winning_grids_with_size_four_correctly_returns_winner(self):
-        self.grid = Grid(size=4)
-        for tested_grid in self.WINNING_SIZE_FOUR_GRIDS:
-            self.grid.grid = tested_grid
-            assert self.grid.has_won()
